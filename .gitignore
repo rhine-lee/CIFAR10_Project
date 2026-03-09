@@ -1,0 +1,28 @@
+# Ignore checkpoints and model weights
+checkpoints/
+*.pth
+
+# Ignore dataset files
+data/
+
+# Python cache and artifacts
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Editor directories
+.vscode/
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+tmp/
