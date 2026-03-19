@@ -2,8 +2,9 @@ import os
 from typing import Tuple
 
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 from torchvision import datasets, transforms
+import numpy as np
 
 
 CIFAR10_CLASSES = [
@@ -35,11 +36,15 @@ def get_dataloaders(data_dir: str = './data', batch_size: int = 128, val_split: 
     test_set = datasets.CIFAR10(root=data_dir, train=False, download=True, transform=test_transform)
 
     if val_split > 0:
-        val_len = int(len(full_train) * val_split)
-        train_len = len(full_train) - val_len
-        train_set, val_set = random_split(full_train, [train_len, val_len])
-        # ensure val uses test transforms
-        val_set.dataset.transform = test_transform
+        n = len(full_train)
+        indices = np.random.permutation(n)
+        val_len = int(n * val_split)
+        train_idx, val_idx = indices[val_len:], indices[:val_len]
+
+        train_set = Subset(full_train, train_idx)
+
+        val_dataset_for_transform = datasets.CIFAR10(root=data_dir, train=True, download=False, transform=test_transform)
+        val_set = Subset(val_dataset_for_transform, val_idx)
     else:
         train_set = full_train
         val_set = None
